@@ -4,241 +4,227 @@ namespace Autopilot;
 
 use JsonSerializable;
 
-class AutopilotContact implements JsonSerializable
-{
-    /**
-     * All fields
-     *
-     * @var array
-     */
-    protected $fields;
+class AutopilotContact implements JsonSerializable {
 
-    /**
-     * List of ids that the user is a part of
-     *
-     * @var array
-     */
-    protected $lists;
+	/**
+	 * All fields
+	 *
+	 * @var array
+	 */
+	protected $fields;
 
-    public function __construct(array $options = [])
-    {
-        $this->fields = [];
+	/**
+	 * List of ids that the user is a part of
+	 *
+	 * @var array
+	 */
+	protected $lists;
 
-        $this->lists = [];
+	public function __construct( array $options = [] ) {
+		$this->fields = [];
 
-        $this->fill($options);
-    }
+		$this->lists = [];
 
-    /**
-     * Getter for contact properties
-     *
-     * @param $name
-     *
-     * @return string|null
-     */
-    public function __get($name)
-    {
-        return $this->getFieldValue($name);
-    }
+		$this->fill( $options );
+	}
 
-    /**
-     * Setter for contact properties
-     *
-     * @param $name
-     * @param $value
-     *
-     * @return string|null
-     */
-    public function __set($name, $value)
-    {
-        return $this->setFieldValue($name, $value);
-    }
+	/**
+	 * Getter for contact properties
+	 *
+	 * @param $name
+	 *
+	 * @return string|null
+	 */
+	public function __get( $name ) {
+		return $this->getFieldValue( $name );
+	}
 
-    /**
-     * Check if contact property is set
-     *
-     * @param $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return $this->issetFieldValue($name);
-    }
+	/**
+	 * Setter for contact properties
+	 *
+	 * @param $name
+	 * @param $value
+	 *
+	 * @return string|null
+	 */
+	public function __set( $name, $value ) {
+		return $this->setFieldValue( $name, $value );
+	}
 
-    /**
-     * Unsetter for contact properties
-     *
-     * @param $name
-     */
-    public function __unset($name)
-    {
-        $this->unsetFieldValue($name);
-    }
+	/**
+	 * Check if contact property is set
+	 *
+	 * @param $name
+	 *
+	 * @return bool
+	 */
+	public function __isset( $name ) {
+		return $this->issetFieldValue( $name );
+	}
 
-    /**
-     * @param $name
-     *
-     * @return string|null
-     */
-    public function getFieldValue($name)
-    {
-        $name = AutopilotField::getFieldName($name);
+	/**
+	 * Unsetter for contact properties
+	 *
+	 * @param $name
+	 */
+	public function __unset( $name ) {
+		$this->unsetFieldValue( $name );
+	}
 
-        // no validation on "getValue()" required since set internally
-        return isset($this->fields[$name]) ? $this->fields[$name]->getValue() : null;
-    }
+	/**
+	 * @param $name
+	 *
+	 * @return string|null
+	 */
+	public function getFieldValue( $name ) {
+		$name = AutopilotField::getFieldName( $name );
 
-    /**
-     * @param $name
-     * @param $value
-     *
-     * @return string|null
-     * @throws AutopilotException
-     */
-    public function setFieldValue($name, $value)
-    {
-        $name = AutopilotField::getFieldName($name);
+		// no validation on "getValue()" required since set internally
+		return isset( $this->fields[$name] ) ? $this->fields[$name]->getValue() : null;
+	}
 
-        /** @var AutopilotField $field */
-        if (! isset($this->fields[$name])) {
-            $field = new AutopilotField($name, $value);
-            $this->fields[$name] = $field;
-        } else {
-            $this->fields[$name]->setValue($value);
-        }
+	/**
+	 * @param $name
+	 * @param $value
+	 *
+	 * @return string|null
+	 * @throws AutopilotException
+	 */
+	public function setFieldValue( $name, $value ) {
+		$name = AutopilotField::getFieldName( $name );
 
-        return $this->fields[$name]->getValue();
-    }
+		/** @var AutopilotField $field */
+		if ( !isset( $this->fields[$name] ) ) {
+			$field = new AutopilotField( $name, $value );
+			$this->fields[$name] = $field;
+		} else {
+			$this->fields[$name]->setValue( $value );
+		}
 
-    /**
-     * Remove field
-     *
-     * @param $name
-     */
-    public function unsetFieldValue($name)
-    {
-        $name = AutopilotField::getFieldName($name);
+		return $this->fields[$name]->getValue();
+	}
 
-        unset($this->fields[$name]);
-    }
+	/**
+	 * Remove field
+	 *
+	 * @param $name
+	 */
+	public function unsetFieldValue( $name ) {
+		$name = AutopilotField::getFieldName( $name );
 
-    /**
-     * Check if contact object contains field
-     *
-     * @param $name
-     *
-     * @return bool
-     */
-    public function issetFieldValue($name)
-    {
-        $name = AutopilotField::getFieldName($name);
+		unset( $this->fields[$name] );
+	}
 
-        return isset($this->fields[$name]);
-    }
+	/**
+	 * Check if contact object contains field
+	 *
+	 * @param $name
+	 *
+	 * @return bool
+	 */
+	public function issetFieldValue( $name ) {
+		$name = AutopilotField::getFieldName( $name );
 
-    /**
-     * Get all lists (cache, not an API call)
-     *
-     * @return array
-     */
-    public function getAllContactLists()
-    {
-        return $this->lists;
-    }
+		return isset( $this->fields[$name] );
+	}
 
-    /**
-     * Check if is member of list (cache, not API call)
-     *
-     * @param $list
-     *
-     * @return bool
-     */
-    public function hasList($list)
-    {
-        return in_array($list, $this->lists);
-    }
+	/**
+	 * Get all lists (cache, not an API call)
+	 *
+	 * @return array
+	 */
+	public function getAllContactLists() {
+		return $this->lists;
+	}
 
-    /**
-     * For each item, add appropriate field with value
-     *
-     * @param array $options
-     *
-     * @return $this
-     */
-    public function fill(array $options = [])
-    {
-        foreach($options as $key => $value) {
-            if ($key === 'custom_fields') {
-                foreach($value as $custom) {
-                    $field = new AutopilotField($custom['kind'], $custom['value'], $custom['fieldType']);
-                    $this->fields[$field->getName()] = $field;
-                }
-            } elseif ($key === 'lists') {
-                $this->lists = $value;
-            } elseif (!is_array($value)) {
-                $field = new AutopilotField($key, $value);
-                $this->fields[$field->getName()] = $field;
-            }
-        }
+	/**
+	 * Check if is member of list (cache, not API call)
+	 *
+	 * @param $list
+	 *
+	 * @return bool
+	 */
+	public function hasList( $list ) {
+		return in_array( $list, $this->lists );
+	}
 
-        return $this;
-    }
+	/**
+	 * For each item, add appropriate field with value
+	 *
+	 * @param array $options
+	 *
+	 * @return $this
+	 */
+	public function fill( array $options = [] ) {
+		foreach ( $options as $key => $value ) {
+			if ( $key === 'custom_fields' ) {
+				foreach ( $value as $custom ) {
+					$field = new AutopilotField( $custom['kind'], $custom['value'], $custom['fieldType'] );
+					$this->fields[$field->getName()] = $field;
+				}
+			} elseif ( $key === 'lists' ) {
+				$this->lists = $value;
+			} elseif ( !is_array( $value ) ) {
+				$field = new AutopilotField( $key, $value );
+				$this->fields[$field->getName()] = $field;
+			}
+		}
 
-    /**
-     * Prepare an array for the API call
-     *
-     * @param bool $prependKey
-     *
-     * @return array
-     */
-    public function toRequest($prependKey = true)
-    {
-        $result = [
-            'custom' => []
-        ];
+		return $this;
+	}
 
-        /** @var AutopilotField $field */
-        foreach($this->fields as $field) {
-            if (! $field->isReserved()) {
-                $result['custom'][$field->formatName()] = $field->getValue();
-            } else {
-                $result[$field->formatName()] = $field->getValue();
-            }
-        }
+	/**
+	 * Prepare an array for the API call
+	 *
+	 * @param bool $prependKey
+	 *
+	 * @return array
+	 */
+	public function toRequest( $prependKey = true ) {
+		$result = [
+			'custom' => []
+		];
 
-        // if not custom values, remove unnecessary key
-        if (sizeof($result['custom']) === 0) {
-            unset($result['custom']);
-        }
+		/** @var AutopilotField $field */
+		foreach ( $this->fields as $field ) {
+			if ( !$field->isReserved() ) {
+				$result['custom'][$field->formatName()] = $field->getValue();
+			} else {
+				$result[$field->formatName()] = $field->getValue();
+			}
+		}
 
-        return $prependKey ? ['contact' => $result] : $result;
-    }
+		// if not custom values, remove unnecessary key
+		if ( sizeof( $result['custom'] ) === 0 ) {
+			unset( $result['custom'] );
+		}
 
-    /**
-     * Return all fields and their values
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $result = [];
+		return $prependKey ? [ 'contact' => $result ] : $result;
+	}
 
-        /** @var AutopilotField $field */
-        foreach($this->fields as $field) {
-            $result[$field->getName()] = $field->getValue();
-        }
+	/**
+	 * Return all fields and their values
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		$result = [];
 
-        return $result;
-    }
+		/** @var AutopilotField $field */
+		foreach ( $this->fields as $field ) {
+			$result[$field->getName()] = $field->getValue();
+		}
 
-    /**
-     * Return json of all fields and their values
-     *
-     * @return array
-     */
-    function jsonSerialize()
-    {
-        return $this->toArray();
-    }
+		return $result;
+	}
+
+	/**
+	 * Return json of all fields and their values
+	 *
+	 * @return array
+	 */
+	function jsonSerialize() {
+		return $this->toArray();
+	}
+
 }
