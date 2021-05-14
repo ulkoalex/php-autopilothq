@@ -45,6 +45,16 @@ class AutopilotManager {
 		] );
 	}
 
+	/**
+	 * @return array
+	 * @throws AutopilotException
+	 */
+	public function getAccount() {
+		$response = $this->apiGet( 'account' );
+
+		return $response;
+	}
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// CONTACT action methods
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
