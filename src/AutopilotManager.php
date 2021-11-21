@@ -29,6 +29,20 @@ class AutopilotManager {
 	protected static $MAX_UPLOADS = 100;
 
 	/**
+	 * Float describing the total timeout of the request in seconds. Use 0 to wait indefinitely (the default behavior).
+	 * @see https://docs.guzzlephp.org/en/latest/request-options.html#timeout
+	 * @var int
+	 */
+	public $timeout = 0;
+
+	/**
+	 * Float describing the number of seconds to wait while trying to connect to a server. Use 0 to wait indefinitely (the default behavior).
+	 * @see https://docs.guzzlephp.org/en/latest/request-options.html#connect-timeout
+	 * @var int
+	 */
+	public $connect_timeout = 0;
+
+	/**
 	 * AutopilotManager constructor.
 	 *
 	 * @param string $apiKey Autopilot secret key.
@@ -492,7 +506,11 @@ class AutopilotManager {
 	 */
 	protected function apiPost( $path, $data = [] ) {
 		try {
-			$options = [ 'headers' => $this->getApiHeaders() ];
+			$options = [
+				'headers'         => $this->getApiHeaders(),
+				'timeout'         => $this->timeout,
+				'connect_timeout' => $this->connect_timeout,
+			];
 			if ( sizeof( $data ) > 0 ) {
 				$options['json'] = json_encode( $data );
 			}
@@ -518,6 +536,8 @@ class AutopilotManager {
 		try {
 			$response = $this->client->get( $path, [
 				'headers' => $this->getApiHeaders(),
+				'timeout'         => $this->timeout,
+				'connect_timeout' => $this->connect_timeout,
 			] );
 		} catch ( TransferException $e ) {
 			throw AutopilotException::fromExisting( $e );
@@ -541,6 +561,8 @@ class AutopilotManager {
 
 			$response = $this->client->delete( $path, [
 				'headers' => $this->getApiHeaders(),
+				'timeout'         => $this->timeout,
+				'connect_timeout' => $this->connect_timeout,
 			] );
 		} catch ( TransferException $e ) {
 			throw AutopilotException::fromExisting( $e );
