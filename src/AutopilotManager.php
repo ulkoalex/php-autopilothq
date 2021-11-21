@@ -3,7 +3,7 @@
 namespace Autopilot;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\TransferException;
 
 class AutopilotManager {
 
@@ -142,6 +142,8 @@ class AutopilotManager {
 	 * @param $id
 	 *
 	 * @return boolean
+	 *
+	 * @throws AutopilotException
 	 */
 	public function deleteContact( $id ) {
 		$this->apiDelete( 'contact/' . $id );
@@ -153,6 +155,8 @@ class AutopilotManager {
 	 * @param $id
 	 *
 	 * @return boolean
+	 *
+	 * @throws AutopilotException
 	 */
 	public function unsubscribeContact( $id ) {
 		$this->apiPost( 'contact/' . $id . '/unsubscribe' );
@@ -164,6 +168,8 @@ class AutopilotManager {
 	 * @param $id
 	 *
 	 * @return boolean
+	 *
+	 * @throws AutopilotException
 	 */
 	public function subscribeContact( $id ) {
 		$contact = $this->getContact( $id );
@@ -178,6 +184,8 @@ class AutopilotManager {
 	 * @param $new
 	 *
 	 * @return boolean
+	 *
+	 * @throws AutopilotException
 	 */
 	public function updateContactEmail( $old, $new ) {
 		$contact = $this->getContact( $old );
@@ -195,6 +203,7 @@ class AutopilotManager {
 	 * Get a list of all contact lists (ex: [ $listId => $listName ])
 	 *
 	 * @return array
+	 *
 	 * @throws AutopilotException
 	 */
 	public function getAllLists() {
@@ -215,6 +224,7 @@ class AutopilotManager {
 	 * @param $name
 	 *
 	 * @return array
+	 *
 	 * @throws AutopilotException
 	 */
 	public function createList( $name ) {
@@ -231,6 +241,8 @@ class AutopilotManager {
 	 * @param $name
 	 *
 	 * @return null|string
+	 *
+	 * @throws AutopilotException
 	 */
 	public function getListByName( $name ) {
 		$lists = $this->getAllLists();
@@ -379,13 +391,23 @@ class AutopilotManager {
 	// Journey ACTION methods
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
+	/**
+	 * @return array|null
+	 * @throws AutopilotException
+	 */
 	public function allTriggers() {
 		$response = $this->apiGet( 'triggers' );
 
 		return $response;
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $contactId
+	 *
+	 * @return array
+	 * @throws AutopilotException
+	 */
 	public function addContactToJourney( $name, $contactId ) {
 		$response = $this->apiPost( 'trigger/' . $name . '/contact/' . $contactId );
 
@@ -475,7 +497,7 @@ class AutopilotManager {
 				$options['json'] = json_encode( $data );
 			}
 			$response = $this->client->post( $path, $options );
-		} catch ( ClientException $e ) {
+		} catch ( TransferException $e ) {
 			throw AutopilotException::fromExisting( $e );
 		}
 
@@ -497,7 +519,7 @@ class AutopilotManager {
 			$response = $this->client->get( $path, [
 				'headers' => $this->getApiHeaders(),
 			] );
-		} catch ( ClientException $e ) {
+		} catch ( TransferException $e ) {
 			throw AutopilotException::fromExisting( $e );
 		}
 
@@ -520,7 +542,7 @@ class AutopilotManager {
 			$response = $this->client->delete( $path, [
 				'headers' => $this->getApiHeaders(),
 			] );
-		} catch ( ClientException $e ) {
+		} catch ( TransferException $e ) {
 			throw AutopilotException::fromExisting( $e );
 		}
 
@@ -550,6 +572,8 @@ class AutopilotManager {
 	 *
 	 * @param AutopilotContact $contact
 	 * @param                  $contactId
+	 *
+	 * @throws AutopilotException
 	 */
 	protected function contactPostUpdate( AutopilotContact $contact, $contactId ) {
 		$contact->setFieldValue( 'contact_id', $contactId );
