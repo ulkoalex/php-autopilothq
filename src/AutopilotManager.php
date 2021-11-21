@@ -31,10 +31,8 @@ class AutopilotManager {
 	/**
 	 * AutopilotManager constructor.
 	 *
-	 * @param string $apiKey
-	 *   Autopilot secret key.
-	 * @param string $apiHost
-	 *   Autopilot host URI.
+	 * @param string $apiKey Autopilot secret key.
+	 * @param string $apiHost Autopilot host URI.
 	 */
 	public function __construct( $apiKey, $apiHost = null, Client $client = null ) {
 		$this->apiKey = $apiKey;
