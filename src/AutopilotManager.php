@@ -53,7 +53,7 @@ class AutopilotManager {
 
 		// instantiate client
 		$this->client = (null !== $client) ? $client : new Client( [
-			'base_uri' => $apiHost ?: 'https://api2.autopilothq.com/v1/',
+			'base_uri'        => $apiHost ?: 'https://api2.autopilothq.com/v1/',
 		] );
 	}
 
@@ -323,7 +323,7 @@ class AutopilotManager {
 	/**
 	 * Get a list of all contacts in list
 	 *
-	 * @param      $listId
+	 * @param string $listId
 	 * @param null $bookmark
 	 *
 	 * @return array|null
@@ -370,8 +370,8 @@ class AutopilotManager {
 	/**
 	 * Add contact to list
 	 *
-	 * @param $listId
-	 * @param $contactId
+	 * @param string $listId
+	 * @param string $contactId
 	 *
 	 * @return bool
 	 * @throws AutopilotException
@@ -390,8 +390,8 @@ class AutopilotManager {
 	/**
 	 * Remove contact from list
 	 *
-	 * @param $listId
-	 * @param $contactId
+	 * @param string $listId
+	 * @param string $contactId
 	 *
 	 * @return bool
 	 * @throws AutopilotException
@@ -410,8 +410,8 @@ class AutopilotManager {
 	/**
 	 * Check if contact is a member of list
 	 *
-	 * @param $listId
-	 * @param $contactId
+	 * @param string $listId
+	 * @param string $contactId
 	 *
 	 * @return bool
 	 * @throws AutopilotException
@@ -560,7 +560,7 @@ class AutopilotManager {
 	/**
 	 * GET helper
 	 *
-	 * @param $path
+	 * @param string $path
 	 *
 	 * @return array|null
 	 * @throws AutopilotException
@@ -568,7 +568,7 @@ class AutopilotManager {
 	protected function apiGet( $path ) {
 		try {
 			$response = $this->client->get( $path, [
-				'headers' => $this->getApiHeaders(),
+				'headers'         => $this->getApiHeaders(),
 				'timeout'         => $this->timeout,
 				'connect_timeout' => $this->connect_timeout,
 			] );
@@ -593,7 +593,7 @@ class AutopilotManager {
 		try {
 
 			$response = $this->client->delete( $path, [
-				'headers' => $this->getApiHeaders(),
+				'headers'         => $this->getApiHeaders(),
 				'timeout'         => $this->timeout,
 				'connect_timeout' => $this->connect_timeout,
 			] );
@@ -613,8 +613,8 @@ class AutopilotManager {
 	 */
 	protected function getApiHeaders() {
 		return [
-			'autopilotapikey'	 => $this->apiKey,
-			'Content-Type'		 => 'application/json',
+			'autopilotapikey' => $this->apiKey,
+			'Content-Type'    => 'application/json',
 		];
 	}
 
@@ -626,7 +626,7 @@ class AutopilotManager {
 	 * Process a contact object after an update action
 	 *
 	 * @param AutopilotContact $contact
-	 * @param                  $contactId
+	 * @param string $contactId
 	 *
 	 * @throws AutopilotException
 	 */
