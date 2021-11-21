@@ -72,6 +72,39 @@ class AutopilotManager {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	/**
+	 * Get a list of all contacts
+	 *
+	 * @param null $bookmark
+	 *
+	 * @return array|null
+	 * @throws AutopilotException
+	 */
+	public function getAllContacts( $bookmark = null ) {
+		$path = 'contacts';
+		if ( ! is_null( $bookmark ) ) {
+			$path .= '/' . $bookmark;
+		}
+
+		$response = $this->apiGet( $path );
+
+		$list = [
+			'total_contacts' => $response['total_contacts'],
+			'contacts'		 => [],
+		];
+
+		if ( isset( $response['bookmark'] ) ) {
+			$list['bookmark'] = $response['bookmark'];
+		}
+
+		foreach ( $response['contacts'] as $data ) {
+			$contact = new AutopilotContact( $data );
+			$list['contacts'][] = $contact;
+		}
+
+		return $list;
+	}
+
+	/**
 	 * @param $id
 	 *
 	 * @return AutopilotContact
